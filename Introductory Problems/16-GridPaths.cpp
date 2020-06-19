@@ -1,12 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
-ll ans=0;
-ll n = 7;
+int ans=0;
+const int n = 7;
 bool visited[7][7]{};
+int arr[49]{};
 
-void solve(string s, ll r, ll c, ll idx)
+void solve(int r, int c, int idx)
 {
     if(r==6 && c==0)
     {
@@ -22,43 +22,59 @@ void solve(string s, ll r, ll c, ll idx)
 
     visited[r][c] = true;
 
-    if(s[idx]!='?')
+    if(arr[idx]!=-1)
     {
-        if(s[idx]=='D' && r+1<7 && !visited[r+1][c])
+        switch (arr[idx])
         {
-            solve(s, r+1, c, idx+1);
+            case 0:
+                if(r-1>=0 && !visited[r-1][c])
+                {
+                    solve(r-1, c, idx+1);
+                }
+                break;
+
+            case 1:
+                if(c-1>=0 && !visited[r][c-1])
+                {
+                    solve(r, c-1, idx+1);
+                }
+                break;
+
+            case 2:
+                if(r+1<7 && !visited[r+1][c])
+                {
+                    solve(r+1, c, idx+1);
+                }
+                break;
+            
+            case 3:
+                if(c+1<7 && !visited[r][c+1])
+                {
+                    solve(r, c+1, idx+1);
+                }
+                break;
         }
-        else if(s[idx]=='R' && c+1<7 && !visited[r][c+1])
-        {
-            solve(s, r, c+1, idx+1);
-        }
-        else if(s[idx]=='L' && c>0 && !visited[r][c-1])
-        {
-            solve(s, r, c-1, idx+1);
-        }
-        else if(s[idx]=='U' && r>0 && !visited[r-1][c])
-        {
-            solve(s, r-1, c, idx+1);
-        }
+        visited[r][c]=false;
+        return;
     }
 
     else
     {
         if(r+1<7 && !visited[r+1][c])
         {
-            solve(s, r+1, c, idx+1);
+            solve(r+1, c, idx+1);
         }
         if(c+1<7 && !visited[r][c+1])
         {
-            solve(s, r, c+1, idx+1);
+            solve(r, c+1, idx+1);
         }
         if(c>0 && !visited[r][c-1])
         {
-            solve(s, r, c-1, idx+1);
+            solve(r, c-1, idx+1);
         }
         if(r>0 && !visited[r-1][c])
         {
-            solve(s, r-1, c, idx+1);
+            solve(r-1, c, idx+1);
         }
     }
 
@@ -67,10 +83,27 @@ void solve(string s, ll r, ll c, ll idx)
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
     string s;
     cin>>s;
 
-    solve(s, 0, 0, 0);
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (s[i] == '?')
+            arr[i] = -1;
+        else if (s[i] == 'U')
+            arr[i] = 0;
+        else if (s[i] == 'L')
+            arr[i] = 1;
+        else if (s[i] == 'D')
+            arr[i] = 2;
+        else if (s[i] == 'R')
+            arr[i] = 3;
+    }
+    
+    solve(0, 0, 0);
     cout<<ans<<endl;
+    
     return 0;
 }
